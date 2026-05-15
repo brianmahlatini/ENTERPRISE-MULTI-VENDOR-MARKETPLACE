@@ -34,22 +34,18 @@ Backend health: http://localhost:5050/health
 
 ## Screenshots
 
-> Place project screenshots in `docs/screenshots/` using the filenames below.
+Place project screenshots in `docs/screenshots/` with the exact names below.
 
-### Admin Workspace
+| Workspace | Screenshot | File |
+|---|---|---|
+| Admin | Hero | `docs/screenshots/admin-workspace-hero.png` |
+| Admin | Dashboard Metrics | `docs/screenshots/admin-dashboard-metrics.png` |
+| Seller | Hero | `docs/screenshots/seller-workspace-hero.png` |
+| Seller | Dashboard Form | `docs/screenshots/seller-dashboard-form.png` |
+| Buyer | Hero | `docs/screenshots/buyer-workspace-hero.png` |
+| Buyer | Catalog | `docs/screenshots/buyer-catalog.png` |
 
-![Admin Workspace Hero](docs/screenshots/admin-workspace-hero.png)
-![Admin Dashboard Metrics](docs/screenshots/admin-dashboard-metrics.png)
-
-### Seller Workspace
-
-![Seller Workspace Hero](docs/screenshots/seller-workspace-hero.png)
-![Seller Dashboard Form](docs/screenshots/seller-dashboard-form.png)
-
-### Buyer Workspace
-
-![Buyer Workspace Hero](docs/screenshots/buyer-workspace-hero.png)
-![Buyer Catalog](docs/screenshots/buyer-catalog.png)
+Once these files are added, screenshot previews can be re-enabled without changing folder structure.
 
 ## Tech Stack
 
