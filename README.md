@@ -34,6 +34,10 @@ Backend health: http://localhost:5050/health
 
 ## Screenshots
 
+### Account Access
+
+![Account access registration screen](docs/screenshots/account-access.png)
+
 ### Admin Workspace
 
 ![Admin workspace hero](docs/screenshots/admin-workspace-hero.png)
