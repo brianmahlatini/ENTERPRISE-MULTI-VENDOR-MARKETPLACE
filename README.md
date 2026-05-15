@@ -32,6 +32,25 @@ Backend health: http://localhost:5050/health
 - Seeded product catalog with marketplace product images.
 - Docker Compose services for frontend, backend, PostgreSQL, MongoDB, and Redis.
 
+## Screenshots
+
+> Place project screenshots in `docs/screenshots/` using the filenames below.
+
+### Admin Workspace
+
+![Admin Workspace Hero](docs/screenshots/admin-workspace-hero.png)
+![Admin Dashboard Metrics](docs/screenshots/admin-dashboard-metrics.png)
+
+### Seller Workspace
+
+![Seller Workspace Hero](docs/screenshots/seller-workspace-hero.png)
+![Seller Dashboard Form](docs/screenshots/seller-dashboard-form.png)
+
+### Buyer Workspace
+
+![Buyer Workspace Hero](docs/screenshots/buyer-workspace-hero.png)
+![Buyer Catalog](docs/screenshots/buyer-catalog.png)
+
 ## Tech Stack
 
 Frontend:
