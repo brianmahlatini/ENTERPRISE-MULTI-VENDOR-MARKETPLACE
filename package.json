@@ -1,0 +1,14 @@
+{
+  "name": "markethub-angular-aspnet",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "backend:build": "dotnet build backend/MarketHub.Api.csproj",
+    "backend:dev": "dotnet run --project backend/MarketHub.Api.csproj",
+    "frontend:install": "npm --prefix frontend install",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:dev": "npm --prefix frontend start",
+    "docker:up": "docker compose up --build",
+    "docker:up:detached": "docker compose up --build -d"
+  }
+}

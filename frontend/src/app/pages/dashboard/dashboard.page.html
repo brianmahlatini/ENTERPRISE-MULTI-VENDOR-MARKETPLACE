@@ -1,0 +1,153 @@
+<main class="shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Multi-vendor commerce</p>
+      <h1>MarketHub</h1>
+    </div>
+    <nav *ngIf="user">
+      <a *ngIf="isBuyer" href="#store">Store</a>
+      <a *ngIf="isBuyer" href="#cart">Cart</a>
+      <a *ngIf="isSeller" href="#seller">Seller</a>
+      <a *ngIf="isAdmin" href="#admin">Admin</a>
+    </nav>
+    <button *ngIf="user" class="ghost" type="button" (click)="logout()">Logout {{ user.username }}</button>
+  </header>
+
+  <section class="hero" [class.signed-in]="user">
+    <div>
+      <p class="eyebrow">{{ user ? user.role + ' workspace' : 'Account access' }}</p>
+      <h2 *ngIf="!user">Sign in to enter the right marketplace workspace.</h2>
+      <h2 *ngIf="isAdmin">Platform command center for users, products, orders, and revenue.</h2>
+      <h2 *ngIf="isSeller">Manage your catalog, setup payments, and track seller revenue.</h2>
+      <h2 *ngIf="isBuyer">Browse products, manage your cart, and checkout.</h2>
+    </div>
+
+    <div *ngIf="!user" class="auth-panel">
+      <div class="segmented">
+        <button type="button" [class.active]="mode === 'register'" (click)="mode = 'register'">Register</button>
+        <button type="button" [class.active]="mode === 'login'" (click)="mode = 'login'">Login</button>
+      </div>
+
+      <form (ngSubmit)="authenticate()">
+        <ng-container *ngIf="mode === 'register'; else loginFields">
+          <input name="username" placeholder="Username" [(ngModel)]="credentials.username">
+          <input name="email" placeholder="Email" type="email" [(ngModel)]="credentials.email">
+          <select name="role" [(ngModel)]="credentials.role">
+            <option value="Buyer">Buyer</option>
+            <option value="Seller">Seller</option>
+            <option value="Admin">Admin first account only</option>
+          </select>
+        </ng-container>
+        <ng-template #loginFields>
+          <input name="identifier" placeholder="Username or email" [(ngModel)]="credentials.identifier">
+        </ng-template>
+        <input name="password" placeholder="Password" type="password" [(ngModel)]="credentials.password">
+        <button type="submit">{{ mode === 'register' ? 'Create account' : 'Sign in' }}</button>
+      </form>
+    </div>
+
+    <div *ngIf="user" class="identity-panel">
+      <span>{{ user.email }}</span>
+      <strong>{{ user.role }}</strong>
+    </div>
+  </section>
+
+  <p *ngIf="message" class="notice">{{ message }}</p>
+
+  <ng-container *ngIf="isAdmin">
+    <section class="panel admin-console" id="admin">
+      <h2>Admin Dashboard</h2>
+      <div class="metrics admin">
+        <span>Users <strong>{{ admin?.users ?? 0 }}</strong></span>
+        <span>Sellers <strong>{{ admin?.sellers ?? 0 }}</strong></span>
+        <span>Buyers <strong>{{ admin?.buyers ?? 0 }}</strong></span>
+        <span>Products <strong>{{ admin?.products ?? products.length }}</strong></span>
+        <span>Orders <strong>{{ admin?.orders ?? 0 }}</strong></span>
+        <span>Revenue <strong>{{ (admin?.revenue ?? 0) | currency }}</strong></span>
+      </div>
+    </section>
+
+    <section class="admin-products">
+      <div class="section-heading">
+        <h2>Product Oversight</h2>
+        <span>{{ products.length }} active products</span>
+      </div>
+      <article *ngFor="let product of products" class="product-row">
+        <img [src]="product.imageUrl" [alt]="product.title">
+        <div>
+          <strong>{{ product.title }}</strong>
+          <p>{{ product.category }} - {{ product.inventory }} in stock</p>
+        </div>
+        <span>{{ product.price | currency }}</span>
+      </article>
+    </section>
+  </ng-container>
+
+  <ng-container *ngIf="isBuyer">
+    <section class="toolbar" id="store">
+      <input placeholder="Search products" [(ngModel)]="search" (input)="loadProducts()">
+      <select [(ngModel)]="category" (change)="loadProducts()">
+        <option value="">All categories</option>
+        <option *ngFor="let item of categories" [value]="item">{{ item }}</option>
+      </select>
+    </section>
+
+    <section class="product-grid">
+      <article *ngFor="let product of products" class="product-card">
+        <img [src]="product.imageUrl" [alt]="product.title">
+        <div class="product-body">
+          <p class="eyebrow">{{ product.category }}</p>
+          <h3>{{ product.title }}</h3>
+          <p>{{ product.description }}</p>
+          <div class="card-row">
+            <strong>{{ product.price | currency }}</strong>
+            <span>{{ product.inventory }} in stock</span>
+          </div>
+          <button type="button" (click)="add(product)">Add to cart</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel cart-panel" id="cart">
+      <h2>Buyer Cart</h2>
+      <div *ngIf="cart.items.length === 0" class="empty">No items yet.</div>
+      <div *ngFor="let line of cart.items" class="line-item">
+        <img [src]="line.imageUrl" [alt]="line.title">
+        <div>
+          <strong>{{ line.title }}</strong>
+          <p>{{ line.lineTotal | currency }}</p>
+        </div>
+        <input type="number" min="0" [ngModel]="line.quantity" (ngModelChange)="updateLine(line, $event)">
+      </div>
+      <div class="total">
+        <span>Total</span>
+        <strong>{{ cart.total | currency }}</strong>
+      </div>
+      <button type="button" (click)="checkout()">Checkout</button>
+    </section>
+  </ng-container>
+
+  <section *ngIf="isSeller" class="panel seller-panel" id="seller">
+    <h2>Seller Dashboard</h2>
+    <div class="metrics">
+      <span>Products <strong>{{ seller?.productCount ?? 0 }}</strong></span>
+      <span>Orders <strong>{{ seller?.orderCount ?? 0 }}</strong></span>
+      <span>Revenue <strong>{{ (seller?.revenue ?? 0) | currency }}</strong></span>
+    </div>
+    <form class="product-form" (ngSubmit)="createProduct()">
+      <input name="productTitle" placeholder="Product title" [(ngModel)]="productForm.title">
+      <select name="productCategory" [(ngModel)]="productForm.category">
+        <option *ngFor="let item of categories" [value]="item">{{ item }}</option>
+      </select>
+      <input name="price" type="number" min="1" step="0.01" [(ngModel)]="productForm.price">
+      <input name="inventory" type="number" min="0" [(ngModel)]="productForm.inventory">
+      <input name="imageUrl" placeholder="Image URL" [(ngModel)]="productForm.imageUrl">
+      <textarea name="description" placeholder="Description" [(ngModel)]="productForm.description"></textarea>
+      <button type="submit">Publish product</button>
+    </form>
+    <div class="button-row">
+      <button type="button" class="secondary" (click)="connectSeller()">Stripe Connect</button>
+      <button type="button" class="secondary" (click)="subscribeSeller()">Subscription</button>
+    </div>
+  </section>
+</main>

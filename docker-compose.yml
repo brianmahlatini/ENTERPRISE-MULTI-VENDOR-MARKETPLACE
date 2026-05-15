@@ -1,0 +1,63 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      FRONTEND_URLS: http://localhost:4210,http://localhost:4200
+      POSTGRES_CONNECTION_STRING: Host=postgres;Port=5432;Database=marketplace;Username=marketplace;Password=marketplace
+      MONGODB_URI: mongodb://mongo:27017/marketplace
+      REDIS_URL: redis:6379
+      AUTH_SECRET: replace-with-a-long-random-secret
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_SELLER_SUBSCRIPTION_PRICE_ID: ${STRIPE_SELLER_SUBSCRIPTION_PRICE_ID:-}
+      AWS_REGION: ${AWS_REGION:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
+    ports:
+      - "5050:5000"
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "4210:80"
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: marketplace
+      POSTGRES_PASSWORD: marketplace
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  postgres-data:
+  mongo-data:
+  redis-data:

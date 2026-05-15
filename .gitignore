@@ -1,0 +1,33 @@
+# Environment files
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+.npm/
+
+# Logs and local runtime output
+*.log
+backend/dev-server.out.log
+backend/dev-server.err.log
+
+# Docker / OS / editor noise
+.docker/
+.DS_Store
+Thumbs.db
+.idea/
+**/.vscode/
